@@ -1,0 +1,17 @@
+name_of_tablets_entry
+reference_no_entry
+dose_entry
+no_of_tablets_entry
+issue_date_entry
+expiry_date_entry
+daily_dose_entry
+blood_pressure_entry
+medication_entry
+patient_id_entry
+aadhar_no_entry
+doctor_name_entry
+patient_first_name_entry
+patient_last_name_entry
+age_entry
+dob_entry
+address_entry
