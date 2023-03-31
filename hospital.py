@@ -8,6 +8,12 @@ import datetime
 import mysql.connector
 
 
+def main():
+    root_ele = Tk()
+    ob = Hospital(root_ele)
+    root_ele.mainloop()
+
+
 class Hospital:
 
     def fetch_data(self):
@@ -172,31 +178,72 @@ class Hospital:
             self.text_prescription.insert(
                 END, "Medication :\t"+self.ref.get()+"\n")
 
-        label_title = Label(self.root, bd=20, bg="red", relief=RIDGE,
+        def idelete():
+            con = mysql.connector.connect(
+                host="localhost", user="root", password="12345678", database="patientdata",
+                auth_plugin='mysql_native_password')
+            my_cursor = con.cursor()
+            query = "delete from hospital where Reference_No=%s"
+            value = (self.ref.get(),)
+            my_cursor.execute(query, value)
+            con.commit()
+            con.close()
+            self.fetch_data()
+            messagebox.showinfo("Delete", "Record deleted successfully")
+
+        def clear():
+            self.ref.set(""),
+            self.RoomNo.set(""),
+            self.NameOfTablets.set(""),
+            self.Dose.set(""),
+            self.DoctorName.set(""),
+            self.IssueDate.set(""),
+            self.BloodPressure.set(""),
+            self.Medication.set(""),
+            self.PatientId.set(""),
+            self.AadharNo.set(""),
+            self.Phone.set(""),
+            self.FirstName.set(""),
+            self.LastName.set(""),
+            self.Age.set(""),
+            self.dob.set(""),
+            self.PatientAddress.set("")
+
+        def iexit():
+            ext = messagebox.askyesno(
+                "Hospitsal Management System", "Do you want to exit?")
+            if ext > 0:
+                root.destroy()
+
+        label_title = Label(root, bd=20, bg="red", relief=RIDGE,
                             text="HOSPITAL PATIENT DATABASE", fg="white",
                             font=("impact", 32, "bold"))
+
         label_title.pack(side=TOP, fill=X)
 
+        # NAV BAR
+        nav_frame = Frame(root, bd=20, relief=RIDGE, borderwidth=7)
+        nav_frame.place(x=0, y=88, width=1280, height=54)
+
         # Dataframe
-        data_frame = Frame(self.root, bd=20, relief=RIDGE, borderwidth=7)
-        data_frame.place(x=0, y=88, width=1280, height=363)
+        data_frame = Frame(root, bd=20, relief=RIDGE, borderwidth=7)
+        data_frame.place(x=0, y=142, width=1280, height=340)
 
         patient_information = LabelFrame(data_frame, bd=10, relief=RIDGE, borderwidth=5, padx=10, font=(
             "times new roman", 12, "bold"), text="Patient Information")
-        patient_information.place(x=2, y=5, width=845, height=343)
+        patient_information.place(x=2, y=5, width=845, height=320)
 
         prescription = LabelFrame(data_frame, bd=10, relief=RIDGE, borderwidth=5, padx=10, font=(
             "times new roman", 12, "bold"), text="Prescription Information")
-        prescription.place(x=855, y=5, width=380, height=343)
+        prescription.place(x=855, y=5, width=400, height=320)
 
         # details frame
-        details_frame = Frame(self.root, bd=20,
-                              relief=RIDGE, borderwidth=7)
-        details_frame.place(x=0, y=450, width=1280, height=160)
+        details_frame = Frame(root, bd=20, relief=RIDGE, borderwidth=7)
+        details_frame.place(x=0, y=480, width=1280, height=130)
 
         # BUTTON FRAME
-        button_frame = Frame(self.root, bd=20, relief=RIDGE, borderwidth=7)
-        button_frame.place(x=0, y=600, width=1280, height=54)
+        button_frame = Frame(root, bd=20, relief=RIDGE, borderwidth=7)
+        button_frame.place(x=0, y=610, width=1280, height=54)
 
         # Patient Information frame
 
@@ -207,7 +254,8 @@ class Hospital:
         reference_no = Label(patient_information, text="Reference No :", font=(
             "arial", 12, "bold"), padx=2)
         reference_no.grid(row=0, column=0, sticky=W)
-        # roomn no
+
+        # room no
         room_no = Label(patient_information, text="Room no :", font=(
             "arial", 12, "bold"), padx=2, pady=6)
         room_no.grid(row=1, column=0, sticky=W)
@@ -243,38 +291,37 @@ class Hospital:
         # Patient id
         patient_id = Label(patient_information, text="Patient Id :", font=(
             "arial", 12, "bold"), padx=2, pady=6)
-        patient_id.grid(row=8, column=0, sticky=W)
+        patient_id.grid(row=0, column=4, sticky=W, padx=(10, 0))
         # Aadhar No
         aadhar_no = Label(patient_information, text="Aadhar No :",
                           font=("arial", 12, "bold"), padx=2, pady=6)
-        aadhar_no.grid(row=0, column=4, sticky=W, padx=(10, 0))
+        aadhar_no.grid(row=1, column=4, sticky=W, padx=(10, 0))
 
         # Phone Number
         phone = Label(patient_information, text="Phone No :", font=(
             "arial", 12, "bold"), padx=2, pady=6)
-        phone.grid(row=1, column=4, sticky=W, padx=(10, 0))
+        phone.grid(row=2, column=4, sticky=W, padx=(10, 0))
 
         # Patient First Name
         patient_first_name = Label(patient_information, text="First Name :", font=(
             "arial", 12, "bold"), padx=2, pady=6)
-        patient_first_name.grid(row=2, column=4,
-                                sticky=W, padx=(10, 0))
+        patient_first_name.grid(row=3, column=4, sticky=W, padx=(10, 0))
         # Patient Last Name
         patient_last_name = Label(patient_information, text="Last Name :", font=(
-            "arial", 12, "bold"), padx=2, pady=6)
-        patient_last_name.grid(row=3, column=4, sticky=W, padx=(10, 0))
+            "arial", 12, "bold"), padx=4, pady=6)
+        patient_last_name.grid(row=4, column=4, sticky=W, padx=(10, 0))
         # Age
         age = Label(patient_information, text="Age :",
                     font=("arial", 12, "bold"), padx=2, pady=6)
-        age.grid(row=4, column=4, sticky=W, padx=(10, 0))
+        age.grid(row=5, column=4, sticky=W, padx=(10, 0))
         # Date of Birth
         date_of_birth = Label(patient_information, text="DOB :",
                               font=("arial", 12, "bold"), padx=2, pady=6)
-        date_of_birth.grid(row=5, column=4, sticky=W, padx=(10, 0))
+        date_of_birth.grid(row=6, column=4, sticky=W, padx=(10, 0))
         # Address
         address = Label(patient_information, text="Address :",
                         font=("arial", 12, "bold"), padx=2, pady=6)
-        address.grid(row=6, column=4, sticky=W, padx=(10, 0))
+        address.grid(row=7, column=4, sticky=W, padx=(10, 0))
 
         # ====Entry=====
         reference_no_entry = Entry(patient_information, font=(
@@ -311,35 +358,35 @@ class Hospital:
 
         patient_id_entry = Entry(patient_information, font=(
             "arial", 13, "bold"), width=30, textvariable=self.PatientId)
-        patient_id_entry.grid(row=8, column=1, sticky=W)
+        patient_id_entry.grid(row=0, column=5, sticky=W)
 
         aadhar_no_entry = Entry(patient_information, font=(
             "arial", 13, "bold"), width=30, textvariable=self.AadharNo)
-        aadhar_no_entry.grid(row=0, column=5, sticky=W)
+        aadhar_no_entry.grid(row=1, column=5, sticky=W)
 
         phone_entry = Entry(patient_information, font=(
             "arial", 13, "bold"), width=30, textvariable=self.Phone)
-        phone_entry.grid(row=1, column=5, sticky=W)
+        phone_entry.grid(row=2, column=5, sticky=W)
 
         patient_first_name_entry = Entry(
             patient_information, font=("arial", 13, "bold"), width=30, textvariable=self.FirstName)
-        patient_first_name_entry.grid(row=2, column=5, sticky=W)
+        patient_first_name_entry.grid(row=3, column=5, sticky=W)
 
         patient_last_name_entry = Entry(
             patient_information, font=("arial", 13, "bold"), width=30, textvariable=self.LastName)
-        patient_last_name_entry.grid(row=3, column=5, sticky=W)
+        patient_last_name_entry.grid(row=4, column=5, sticky=W)
 
         age_entry = Entry(patient_information, font=(
             "arial", 13, "bold"), width=30, textvariable=self.Age)
-        age_entry.grid(row=4, column=5, sticky=W)
+        age_entry.grid(row=5, column=5, sticky=W)
 
         date_of_birth_entry = Entry(patient_information, font=(
             "arial", 13, "bold"), width=30, textvariable=self.dob)
-        date_of_birth_entry.grid(row=5, column=5, sticky=W)
+        date_of_birth_entry.grid(row=6, column=5, sticky=W)
 
         address_entry = Entry(patient_information, font=(
             "arial", 13, "bold"), width=30, textvariable=self.PatientAddress)
-        address_entry.grid(row=6, column=5)
+        address_entry.grid(row=7, column=5, sticky=W)
 
         # Prescription
         text_prescription = Text(prescription, font=(
@@ -369,18 +416,46 @@ class Hospital:
 
         # Delete Button
         self.button_delete = Button(button_frame, text="Delete", font=("arial", 9, "bold"),
-                                    width=30, height=2, bg="green", fg="white", anchor=CENTER)
+                                    width=30, height=2, bg="green", fg="white", anchor=CENTER, command=idelete)
+        self.button_delete.grid(row=0, column=4)
         self.button_delete.grid(row=0, column=4)
 
         # Clear Button
         self.button_clear = Button(button_frame, text="Clear", font=("arial", 9, "bold"),
-                                   width=30, height=2, bg="green", fg="white", anchor=CENTER)
+                                   width=30, height=2, bg="green", fg="white", anchor=CENTER, command=clear)
         self.button_clear.grid(row=0, column=5)
 
         # Exit Button
         self.button_exit = Button(button_frame, text="Exit", font=("arial", 9, "bold"),
-                                  width=22, height=2, bg="red", fg="white", anchor=CENTER)
+                                  width=22, height=2, bg="red", fg="white", anchor=CENTER, command=iexit)
         self.button_exit.grid(row=0, column=6)
+
+        # Nav Bar
+
+        # Doctor
+        button_Home = Button(nav_frame, text="Home", font=(
+            "arial", 9, "bold"), width=35, height=2, bg="#2916f5", fg="white", anchor=CENTER)
+        button_Home.grid(row=0, column=0)
+
+        # Doctor
+        button_doctor = Button(nav_frame, text="Doctor",  font=(
+            "arial", 9, "bold"), width=35, height=2, bg="#2916f5", fg="white", anchor=CENTER)
+        button_doctor.grid(row=0, column=1)
+
+        # Patient
+        button_patient = Button(nav_frame, text="Patient", font=(
+            "arial", 9, "bold"), width=35, height=2, bg="#2916f5", fg="white", anchor=CENTER)
+        button_patient.grid(row=0, column=2)
+
+        # Appointments
+        button_appointment = Button(nav_frame, text="Appointments", font=(
+            "arial", 9, "bold"), width=35, height=2, bg="#2916f5", fg="white", anchor=CENTER)
+        button_appointment.grid(row=0, column=3)
+
+        # Logout
+        button_logout = Button(nav_frame, text="Logout", font=("arial", 9, "bold"),
+                               width=34, height=2, bg="#2916f5", fg="white", anchor=CENTER)
+        button_logout.grid(row=0, column=4)
 
         # Table
         # Scroll
@@ -420,6 +495,5 @@ class Hospital:
         self.fetch_data()
 
 
-root_ele = Tk()
-ob = Hospital(root_ele)
-root_ele.mainloop()
+if __name__ == "__main__":
+    main()
